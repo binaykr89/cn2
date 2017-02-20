@@ -1,0 +1,72 @@
+set ns [new Simulator]
+
+set cw [open graph.tr w]
+
+set tf [open lab3.tr w]
+$ns trace-all $tf
+
+set nf [open lab3.nam w]
+$ns namtrace-all $nf
+
+$ns rtproto DV
+
+set n0 [$ns node]
+set n1 [$ns node]
+set n2 [$ns node]
+set n3 [$ns node]
+set n4 [$ns node]
+set n5 [$ns node]
+
+$ns duplex-link $n0 $n1 2Mb 2ms DropTail
+$ns duplex-link $n1 $n4 2Mb 2ms DropTail
+$ns duplex-link $n4 $n5 2Mb 2ms DropTail
+$ns duplex-link $n5 $n3 2Mb 2ms DropTail
+$ns duplex-link $n3 $n2 2Mb 2ms DropTail
+$ns duplex-link $n2 $n0 2Mb 2ms DropTail
+$ns duplex-link $n2 $n1 2Mb 2ms DropTail
+$ns duplex-link $n3 $n4 2Mb 2ms DropTail
+
+$ns rtmodel-at 1.0 down $n1 $n4
+$ns rtmodel-at 3.0 up $n1 $n4
+
+$ns duplex-link-op $n0 $n1 orient right-up
+$ns duplex-link-op $n1 $n4 orient right
+$ns duplex-link-op $n4 $n5 orient right-down
+$ns duplex-link-op $n5 $n3 orient left-down
+$ns duplex-link-op $n3 $n2 orient left
+$ns duplex-link-op $n2 $n0 orient left-up
+$ns duplex-link-op $n2 $n1 orient up
+$ns duplex-link-op $n3 $n4 orient up
+
+set tcp0 [new Agent/TCP]
+$ns attach-agent $n0 $tcp0
+set tcp5 [new Agent/TCPSink]
+$ns attach-agent $n5 $tcp5
+$ns connect $tcp0 $tcp5
+set ftp1 [new Application/FTP]
+$ftp1 attach-agent $tcp0
+$ns at 0.5 "$ftp1 start"
+
+$ns at 0.5 "plot $tcp0 $cw"
+
+proc plot {tcpSource filename} {
+	global ns
+	set now [$ns now]
+	set cwnd [$tcpSource set cwnd_]
+	puts $filename "$now $cwnd"
+	$ns at [expr $now + 0.01] "plot $tcpSource $filename"
+}
+
+proc finish {} {
+	global ns nf tf cw
+	$ns flush-trace
+	close $nf
+	close $tf
+	close $cw
+	exec nam lab3.nam &
+	exit 0
+}
+
+$ns at 5.0 "finish"
+$ns run
+

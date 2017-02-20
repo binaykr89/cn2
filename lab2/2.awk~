@@ -1,0 +1,19 @@
+BEGIN {
+	telnet_count = 0;
+	ftp_count = 0;
+}
+
+{
+	if($1 == "r" && $5 == "tcp")
+		tcp_r_count++;
+	if($1 == "d" && $5 == "tcp")
+		tcp_d_count++;
+	if($1 == "d" && $5 == "cbr")
+		cbr_d_count++;
+}
+
+END {
+	printf("TCP packets received: %d\n", tcp_r_count);
+	printf("TCP packets dropped: %d\n", tcp_d_count);
+	printf("UDP packets dropped: %d\n", cbr_d_count);
+}	
