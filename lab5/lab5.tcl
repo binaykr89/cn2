@@ -13,7 +13,7 @@ $server label "Server"
 $client label "Client"
 
 $ns duplex-link $server $client 10Mb 10ms DropTail
-$ns duplex-link-op $server $client orient right
+$ns duplex-link-op $server $client orient right			#op-orientation
 #$ns duplex-link-op $server $client color Silver
 
 set tcp [new Agent/TCP]

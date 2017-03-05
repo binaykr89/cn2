@@ -8,7 +8,7 @@ $ns trace-all $tf
 set nf [open lab4.nam w]
 $ns namtrace-all $nf
 
-$ns rtproto DV
+$ns rtproto DV #routing protocol direction vector
 
 set n0 [$ns node]
 set n1 [$ns node]
