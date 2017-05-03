@@ -1,3 +1,5 @@
+#./setdest -v 2 -n 10 -s 1 -m 10 -M 50 -t 30 -P 1 -x 500 -y 500 > harsh
+#ns cbrgen.tcl -type cbr -nn 10 -seed 1 -mc 5 -rate 5.0 > jp
 set val(chan) 	Channel/WirelessChannel
 set val(prop) 	Propagation/TwoRayGround
 set val(netif) 	Phy/WirelessPhy
